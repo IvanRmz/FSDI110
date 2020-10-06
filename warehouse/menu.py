@@ -21,13 +21,15 @@ def print_menu():
     print("[2] Display Catalog")
     print("[3] Display items out of stock")
     print("[4] Stock value")
+    print("[5] Update price")
+    print("[6] Delete item")
     print("[x] Close")
 
 def print_item(item):
     print (
-        str(item.id) 
-        + " | " + item.title 
-        + " | " + item.category 
-        + " | " + str(item.stock)
-        + " | " + str(item.price)
+        str(item.id).rjust(3) 
+        + " | " + item.title.ljust(20) 
+        + " | " + item.category.ljust(12) 
+        + " | " + str(item.stock).rjust(5)
+        + " | " + str(item.price).rjust(12)
     )
