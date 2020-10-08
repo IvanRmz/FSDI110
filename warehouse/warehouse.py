@@ -20,6 +20,8 @@ import pickle
 catalog = []
 last_id = 0
 data_file = "warehouse.data"
+price_opc = "price"
+stock_opc = "stock"
 
 # functions
 
@@ -94,17 +96,24 @@ def total_stock_value():
         total += item.stock * item.price
     print("The total is: $" + str(total))
 
-def update_price():
+def update_item(option):
+    global price_opc
+    global stock_opc
     id_found = False
     display_catalog()
     try:
-        id = int(input("Choose Id of the item to change the price: "))
+        id = int(input("Choose Id of the item to change: "))
         for item in catalog:
             if(id == item.id):
                 id_found = True
                 try: 
-                    new_price = float(input("Insert new price: "))
-                    item.price = new_price
+                    if(option == price_opc):
+                        new_price = float(input("Insert new price: "))
+                        item.price = new_price
+                    elif(option == stock_opc):
+                        new_stock = float(input("Insert new stock: "))
+                        item.stock = new_stock
+
                     serialize_catalog()
                     print("\n ~~~ Item updated successfully ~~~ \n")
                     display_catalog()
@@ -137,6 +146,52 @@ def delete_item():
     except ValueError:
         print("*Error, the Id has to be a number, please try again!")
 
+
+def display_categories():
+    clear()
+    print_header("  Categories  ")
+    categories = []
+    for item in catalog:
+        if( item.category.lower() not in (category.lower() for category in categories) ):
+            categories.append(item.category)
+            print(item.category)
+
+    if(len(categories) == 0):
+        print("*** No categories to display ***")
+
+def cheapest_product():
+    clear()
+    print_header("  Cheapest Product  ")
+    if(len(catalog) == 0):
+        print("*** No products in the catalog ***")
+    else:
+        cheapest_item = catalog[0]
+        for item in catalog:
+            if(item.price < cheapest_item.price ):
+                cheapest_item = item
+        print("The Cheapest product it is:")
+        print_item(cheapest_item)
+
+def three_expensive_products():
+    clear()
+    print_header("  3 most expensive products  ")
+    temp = []
+    if(len(catalog) == 0):
+        print("*** No products in the catalog ***")
+    else:
+        temp  = sorted(catalog, key=lambda x: x.price, reverse=True)
+        count = 0
+        for item in temp:
+            print_item(item)
+            count+=1
+            if(count == 3):
+                break
+       
+
+
+    
+        
+
 # instructions
 deserialize_catalog()
 input("\nPress Enter to continue...")
@@ -160,11 +215,21 @@ while( opc != "x" ):
     elif(opc == "5"):
         clear()
         print_header(" Update Price ")
-        update_price()
+        update_item(price_opc)
     elif(opc == "6"):
         clear()
         print_header(" Delete Item ")
         delete_item()
+    elif(opc == "7"):
+        clear()
+        print_header(" Update Item Stock ")
+        update_item(stock_opc)
+    elif(opc == "8"):
+        display_categories()
+    elif(opc == "9"):
+        cheapest_product()
+    elif(opc == "10"):
+        three_expensive_products()
 
     if(opc != "x"):
         input("\nPress Enter to continue...")
